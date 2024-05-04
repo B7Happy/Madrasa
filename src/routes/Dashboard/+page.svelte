@@ -64,7 +64,10 @@
 
   </script>
 
-<div class="flex mx-auto">
+<div class="container bg-white">
+<h1 class="text-4xl font-mono pt-5"> Dashboard</h1>
+<div class="flex mx-auto pt-10 pb-20">
+ 
 	<div class="canvas-container">
 		<canvas bind:this={ctx} width="100" height="50" in:fade></canvas>
 	</div>
@@ -75,6 +78,8 @@
 	<canvas bind:this={ctx3} width="100" height="50" in:fade></canvas>
 </div>
 </div>
+</div>
+
 
   
   <style>
