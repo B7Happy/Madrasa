@@ -4,12 +4,14 @@
     import { UserCircleSolid, GridSolid, AddressBookSolid, ClipboardSolid, HomeSolid, BookOpenSolid } from 'flowbite-svelte-icons';
     import { fade } from "svelte/transition";
     import moment from 'moment';
-     export let data;
-    //import { eleves } from '$lib/Store/elevesStore'; 
+    import { dev } from '$app/environment';
+    import { devApi, prodApi } from '$lib/Method/helper';
+    export let data;
+
+    const url = dev ? devApi : prodApi;
     let eleves : Eleves = data.eleves;
-    //console.log(eleves);
-   //$: eleves = data.eleves;
-   eleves.dateEntree = formatDate(eleves.dateEntree);
+
+    eleves.dateEntree = formatDate(eleves.dateEntree);
     eleves.dateNaissance = formatDate(eleves.dateNaissance);
 
     function formatDate(dateString: string | null): string {
@@ -49,11 +51,10 @@
 		maisonId: eleveData.maisonId,
 		classesId: eleveData.classesId,
 		dateEntree: eleveData.dateEntree
-	}
-    console.log(eleveData);
-    //console.log(jsonEleveData);
-    console.log(JSON.stringify(eleveUpdatedData));
-    const res = fetch('http://localhost:5272/api/Eleves', {
+	  }
+
+    
+    const res = fetch(url + 'Eleves', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -82,7 +83,7 @@
                 categorie: eleves.maison?.categorie ?? "",
 	  };
     console.log(maisonUpdatedData);
-    const res = fetch('http://localhost:5272/api/Maison', {
+    const res = fetch(url + 'Maison', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -99,7 +100,7 @@
 	function saveParentData(eleves: Eleves): void {
     const parentUpdatedData = eleves.maison?.parent;
     console.log(parentUpdatedData);
-    const res = fetch('http://localhost:5272/api/Parent', {
+    const res = fetch(url + 'Parent', {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

@@ -4,15 +4,12 @@ type Professeurs = {
     telMobile: string
     email: string
 }
+import { dev } from '$app/environment';
+import { devApi, prodApi } from '$lib/Method/helper';
 
 export async function load({ fetch }) {
-    // `fetch` understands the relative path and saves the response
-    // inside the HTML to be reused avoiding additional requests
-    const response = await fetch('http://localhost:5272/api/Professeurs')
-  
-    // SvelteKit is going to generate the types
+
+    const response = await fetch(`${dev ? devApi : prodApi}Professeurs`)
     const professeurs: Professeurs[] = await response.json()
-  
-    // this becomes available on the page as `data.posts`
     return { professeurs }
 }

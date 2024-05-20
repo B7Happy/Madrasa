@@ -4,7 +4,9 @@
     import { Input, Label, Toast, Button, Checkbox, A, Radio, Select } from 'flowbite-svelte';
     import { CheckCircleSolid, CloseCircleSolid } from 'flowbite-svelte-icons';
     import { slide } from 'svelte/transition';
-
+    import { dev } from '$app/environment';
+    import { devApi, prodApi } from '$lib/Method/helper';
+    const url = dev ? devApi : prodApi;
     let horaire : Horaire = data;
 
     function goBack () {
@@ -55,7 +57,7 @@
 	function saveHoraire(horaire: Horaire) {
         const foundJour = jours.find(j => j.value === horaire.numJour);
         horaire.jour = foundJour ? foundJour.name : "";
-        const res = fetch('http://localhost:5272/api/Horaire', {
+        const res = fetch(url + 'Horaire', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

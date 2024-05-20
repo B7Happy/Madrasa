@@ -1,8 +1,9 @@
 import type { Classes } from '$lib/Class/Type';
-
-export async function load({ params}) {
-    const response = await fetch('http://localhost:5272/api/Classes/' + params.slug);
-    const resAllProfesseurs = await fetch('http://localhost:5272/api/Professeurs/GetAllProfesseurs');
+import { dev } from '$app/environment';
+import { devApi, prodApi } from '$lib/Method/helper';
+export async function load({ params }) {
+    const response = await fetch(`${dev ? devApi : prodApi}Classes/${params.slug}`);
+    const resAllProfesseurs = await fetch(`${dev ? devApi : prodApi}Professeurs/GetAllProfesseurs`);
     const classe = await response.json();
     const allProfesseurs: { value: number, name: string }[] = await resAllProfesseurs.json();
     return { classe, allProfesseurs }

@@ -1,7 +1,9 @@
 <script lang="ts">
     import type { ClasseCreate } from '$lib/Class/Type';
     import { Input, Label, Helper, Button, Checkbox, A, Radio, Select } from 'flowbite-svelte';
-    
+    import { dev } from '$app/environment';
+    import { devApi, prodApi } from '$lib/Method/helper';
+
     function goBack () {
         history.back();    
     }
@@ -21,7 +23,9 @@
 
 
 	function saveClasse(classe: ClasseCreate): void {
-        const res = fetch('http://localhost:5272/api/Classes', {
+        let apiUrl = dev ? devApi : prodApi;
+        apiUrl += 'Classes';
+        const res = fetch(apiUrl, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

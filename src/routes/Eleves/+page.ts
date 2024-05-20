@@ -47,10 +47,11 @@ interface Maison {
     parent: Parent[] | null;
 }
 
-
+import { dev } from '$app/environment';
+import { devApi, prodApi } from '$lib/Method/helper';
 
 export async function load({ fetch }) {
-    const response = await fetch('http://localhost:5272/api/Eleves/CurrentEleves');
+    const response = await fetch(`${dev ? devApi : prodApi}Eleves/CurrentEleves`);
     const eleves: Eleves[] = await response.json();
     return { eleves }
 }

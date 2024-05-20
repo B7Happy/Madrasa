@@ -5,6 +5,9 @@
     import { Toast, FloatingLabelInput, Modal, Button, Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
     import { CheckCircleSolid, CloseCircleSolid  } from 'flowbite-svelte-icons';
     import { slide } from 'svelte/transition';
+    import { dev } from '$app/environment';
+    import { devApi, prodApi } from '$lib/Method/helper';
+    const url = dev ? devApi : prodApi;
     export let data ;
     let createModal = false;
     let create = false;
@@ -53,7 +56,7 @@
     function createGroupe(){
         modifier = false;
         create = true;
-        const res = fetch('http://localhost:5272/api/Groupe', {
+        const res = fetch(url + 'Groupe', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -82,7 +85,7 @@
 	function edit(){
         create = false;
         modifier = true;
-        const res = fetch('http://localhost:5272/api/Groupe', {
+        const res = fetch(url + 'Groupe', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

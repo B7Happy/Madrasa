@@ -3,6 +3,8 @@
     import { Toast, Input, Label, Helper, Button, Checkbox, A, Radio, Select } from 'flowbite-svelte';
     import { CheckCircleSolid, ExclamationCircleSolid, FireOutline, CloseCircleSolid } from 'flowbite-svelte-icons';
     import { slide } from 'svelte/transition';
+    import { dev } from '$app/environment';
+    import { devApi, prodApi } from '$lib/Method/helper';
     export let data;
 
     let classe : Classes = data.classe;
@@ -38,7 +40,8 @@
 
 
 	function saveClasse(classe: Classes): void {
-        const res = fetch('http://localhost:5272/api/Classes', {
+        const apiUrl = dev ? devApi : prodApi;
+        const res = fetch(apiUrl + 'Classes', {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

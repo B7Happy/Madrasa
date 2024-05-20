@@ -25,3 +25,5 @@ export function Grp(id: number) {
 	return grp;
 }
 
+export const devApi = 'http://localhost:5272/api/';
+export const prodApi = 'https://madrasaapi.azurewebsites.net/api/';

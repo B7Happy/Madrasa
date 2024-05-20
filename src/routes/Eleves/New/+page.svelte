@@ -1,6 +1,9 @@
 <script lang="ts">
     import type { ElevesCreate, ElevesCreate2, MaisonCreate, ParentCreate } from '$lib/Class/Type';
     import { Input, Toggle , Label, Button, Checkbox, Select } from 'flowbite-svelte';
+    import { dev } from '$app/environment';
+    import { devApi, prodApi } from '$lib/Method/helper';
+    const url = dev ? devApi : prodApi;
     let newMaison = false;
     let eleves : ElevesCreate2 = {
       nom: "",
@@ -51,7 +54,7 @@
       eleves.maison = maison;
       console.log(eleves);
       console.log(JSON.stringify(eleves));
-      let response = await fetch('http://localhost:5272/api/Eleves', {
+      let response = await fetch(url + 'Eleves', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
