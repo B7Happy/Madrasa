@@ -1,84 +1,59 @@
 <script lang="ts">
-	import { fade } from "svelte/transition";
-	import Chart from "chart.js/auto";
-	import { transformJSON, makeGroupeJSON, makeCatJSON } from "$lib/Method/dashboard";
-	export let data;
-  
-	let ctx: HTMLCanvasElement | undefined;
-	let ctx2: HTMLCanvasElement | undefined;
-	let ctx3: HTMLCanvasElement | undefined;
-	let chart: Chart | undefined;
-	let groupeChart:  Chart | undefined;
-	let categorieChart:  Chart | undefined;
-	let jsonData = transformJSON(data.eleves);
-	let groupeJsonData = makeGroupeJSON(data.eleves);
-	let catJsonData = makeCatJSON(data.eleves);
+// @ts-nocheck
+import Docxtemplater from 'docxtemplater';
+import PizZip from 'pizzip';
+import FileSaver  from 'file-saver';
+import {classeDocData, classeDocSumData} from '$lib/Method/comptage';
+import moment from 'moment';
+import docxConverter from 'docx-pdf';
+export let data;
 
-	$: if (ctx) {  
-	  chart = new Chart(ctx, {
-		type: "doughnut",
-		data: jsonData,
-		options: {
-		  animation: false,
-		  plugins: {
-            title: {
-                display: true,
-                text: 'Enfants (M/F)'
-            }
-        },
-		},
-	  });
-	}
+console.log(data.classeDataJson);
+const dataDocRaw = classeDocData(data.classeDataJson);
+const dataDocSum = classeDocSumData(data.classeDataJson);
+const now = moment();
 
-	$: if (ctx2) {  
-		groupeChart = new Chart(ctx2, {
-		type: "doughnut",
-		data: groupeJsonData,
-		options: {
-		  animation: false,
-		  plugins: {
-            title: {
-                display: true,
-                text: 'Enfants (Groupe)'
-            }
-        },
-		},
-	  });
-	}
+const dataDoc = {
+    "date": "2023/2024",
+    "classes": dataDocRaw,
+    "sum": dataDocSum,
+    "datetime": now.format('DD/MM/YYYY HH:mm:ss')
+}
 
-	$: if (ctx2) {  
-		categorieChart = new Chart(ctx3, {
-		type: "doughnut",
-		data: catJsonData,
-		options: {
-		  animation: false,
-		  plugins: {
-            title: {
-                display: true,
-                text: 'Enfants (Cat.)'
-            }
-        },
-		},
-	  });
-	}
+//console.log(dataDoc);
+const zip = new PizZip(data.content);
+const template = new Docxtemplater(zip);
+console.log(template);
+template.setData(dataDoc);
+template.render();
+const out = template.getZip().generate({
+    type: 'blob',
+});
+const fileName: string = 'example.pdf';
+// const blob = new Blob([out], { type: 'application/pdf' });
+FileSaver.saveAs(out, "example.docx");
+// var buffer = template.getZip().generate({ type: "nodebuffer" });
+// docxConverter(buffer,'./output.pdf',function(err,result){
+//     if(err){
+//       console.log(err);
+//     }
+//     console.log('result'+result);
+//   });
 
-  </script>
 
-<div class="flex mx-auto">
-	<div class="canvas-container">
-		<canvas bind:this={ctx} width="100" height="50" in:fade></canvas>
-	</div>
-	<div class="canvas-container">
-	  <canvas bind:this={ctx2} width="100" height="50" in:fade></canvas>
-  </div>
-  <div class="canvas-container">
-	<canvas bind:this={ctx3} width="100" height="50" in:fade></canvas>
-</div>
-</div>
 
-  
-  <style>
-	.canvas-container {
-	  width: 500px;
-	}
-  </style>
+// const buffer = template.getZip().generate({ type: "nodebuffer" });
+
+// const reader = new FileReader();
+// reader.onload = async (e) => {
+//     const docxAsHtml = convertToHtml(e.target.result);
+//     await html2pdf().from(docxAsHtml).toPdf().save('converted.pdf');
+// };
+// const buf = await out.arrayBuffer();
+// const url = URL.createObjectURL(out);
+// console.log(url);
+// // Save PDF to disk or display to the user
+// const blob = new Blob([buffer], { type: "application/pdf" });
+// const url = URL.createObjectURL(blob);
+// console.log(url);
+</script>

@@ -3,6 +3,10 @@
     import moment from 'moment';
     export let data;
     import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
+    import { CalendarWeekSolid, UserEditSolid } from 'flowbite-svelte-icons';
+    import { Button } from 'flowbite-svelte';
+    import { goto } from '$app/navigation';
+
     const handler = new DataHandler(data.eleves, { 
         rowsPerPage: 10,
         i18n: {
@@ -21,24 +25,32 @@
     function formatDate(dateString: string | null): string {
         let formattedDate = " ";  
         if(dateString != null){
-        // Parse the date string using Moment.js
-        const date = moment(dateString);
-        // Format the date as dd-mm-yyyy
-        formattedDate = date.format('DD-MM-YYYY');
+            // Parse the date string using Moment.js
+            const date = moment(dateString);
+            // Format the date as dd-mm-yyyy
+            formattedDate = date.format('DD-MM-YYYY');
         }
         return formattedDate;
-    }   
+    }
+    
+    function addNewEleve(){
+        if (browser) {
+            goto('/Eleves/New');
+        }
+    }
 
 </script>
 
-<div class="container mx-auto px-4 bg-white">
+<div class="mx-20 px-4 bg-white">
     <h1 class="text-xl">List des élèves</h1>
-
+    <div class="flex justify-end">
+        <Button class="right-0 mt-4" on:click={addNewEleve} color="blue"> + Rajouter un eleve</Button>
+    </div>
     <Datatable {handler}>
         <table>
             <thead>
                 <tr>
-                    <Th {handler} orderBy="sn">SN</Th>
+                    <Th {handler} orderBy="id">SN</Th>
                     <Th {handler} orderBy="nom">Nom</Th>
                     <Th {handler} orderBy="prenom">Prénom</Th>
                     <Th {handler} orderBy="sexe">Sexe</Th>
@@ -51,12 +63,13 @@
                     <Th {handler} orderBy="maison">Mère</Th>
                     <Th {handler} orderBy="dateEntree">Date d'entrée</Th>
                     <Th {handler} orderBy="maison">Ville</Th>
+                    <Th {handler} orderBy="maison">Action</Th>
                 </tr>
             </thead>
             <tbody>
                 {#each $rows as row}
                     <tr>
-                        <td>{row.sn}</td>
+                        <td>{row.id}</td>
                         <td>{row.nom}</td>
                         <td>{row.prenom}</td>
                         <td>{row.sexe}</td>
@@ -89,8 +102,6 @@
                                 {:else}
                                 <td> </td>
                                 {/if}
-                            {:else}
-                            <td> </td>
                             {/if}
                         {/each}
                         {:else}
@@ -99,6 +110,7 @@
                         {/if}
                         <td>{formatDate(row.dateEntree)}</td>
                         <td>{row.maison?.ville}</td>
+                        <td><a href="Eleves/Edit/{row.id}" > <UserEditSolid size="sm" /></a></td>
                     </tr>
                 {/each}
             </tbody>

@@ -8,7 +8,7 @@ type Professeurs = {
 export async function load({ fetch }) {
     // `fetch` understands the relative path and saves the response
     // inside the HTML to be reused avoiding additional requests
-    const response = await fetch('https://madrasaapi.azurewebsites.net/api/Professeurs')
+    const response = await fetch('http://localhost:5272/api/Professeurs')
   
     // SvelteKit is going to generate the types
     const professeurs: Professeurs[] = await response.json()

@@ -1,12 +1,8 @@
 <script lang="ts">
-    import type { Login, User } from '$lib/Class/Type';
+    import type { Login } from '$lib/Class/Type';
 	import { logIn } from '$lib/Method/login';
-	import { user, userProfile } from '$lib/Store/userStore';
+	import { userProfile } from '$lib/Store/userStore';
     import { goto } from '$app/navigation';
-    import Textfield from '@smui/textfield';
-    // import Icon from '@smui/textfield/icon';
-    import HelperText from '@smui/textfield/helper-text';
-    import Button, { Label, Icon } from '@smui/button';
 	let username = '';
 	let password = '';
 	let error = ''
@@ -22,7 +18,7 @@
         if( responseLogin.status == 200){
             let userData = await responseLogin.json();
             $userProfile = { isLoggedIn: true, role: 'Admin'};
-            goto('/')
+            goto('/Dashboard')
         }
     
         //console.log(responseLogin);

@@ -64,8 +64,8 @@
 
   </script>
 
-<div class="container bg-white">
-<h1 class="text-4xl font-mono pt-5"> Dashboard</h1>
+<div class="container bg-white mx-auto">
+<h1 class="text-4xl font-mono pt-5 ml-5">Dashboard</h1>
 <div class="flex mx-auto pt-10 pb-20">
  
 	<div class="canvas-container">
