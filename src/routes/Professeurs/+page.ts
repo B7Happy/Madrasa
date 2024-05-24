@@ -1,9 +1,4 @@
-
-type Professeurs = {
-    nom: string
-    telMobile: string
-    email: string
-}
+import type { Professeurs } from '$lib/Class/Type';
 import { dev } from '$app/environment';
 import { devApi, prodApi } from '$lib/Method/helper';
 

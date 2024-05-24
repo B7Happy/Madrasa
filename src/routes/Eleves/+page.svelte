@@ -3,9 +3,13 @@
     import moment from 'moment';
     export let data;
     import { DataHandler, Datatable, Th, ThFilter } from '@vincjo/datatables';
-    import { CalendarWeekSolid, UserEditSolid } from 'flowbite-svelte-icons';
-    import { Button } from 'flowbite-svelte';
+    import { AddressBookSolid, CalendarWeekSolid, UserAddSolid, UserEditSolid, UserRemoveSolid } from 'flowbite-svelte-icons';
+    import { Button, FloatingLabelInput, Modal } from 'flowbite-svelte';
     import { goto } from '$app/navigation';
+	import type { Eleves, ElevesSuspendu } from '$lib/Class/Type.js';
+    import { dev } from '$app/environment';
+    import { devApi, prodApi } from '$lib/Method/helper';
+    const url = dev ? devApi : prodApi;
 
     const handler = new DataHandler(data.eleves, { 
         rowsPerPage: 10,
@@ -39,12 +43,53 @@
         }
     }
 
+    let modalDelete = false;
+    let eleveToSusprendre : ElevesSuspendu = {
+		id: 0,
+		suspendu: false
+	};
+
+	function deleteModel(row: any): void {
+		modalDelete = true;
+        eleveToSusprendre.id = row.id;
+        eleveToSusprendre.suspendu = true;
+	}
+
+
+	function suspendreEleve(eleveToSusprendre: ElevesSuspendu): void {
+        fetch(url + 'Eleves/Suspendre', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(eleveToSusprendre)
+        }).then(response => {
+            if (response.ok) {
+                modalDelete = false;
+                location.reload();
+            }
+        });
+    
+		
+	}
+
+
+	function editEleve(row: any) {
+		goto(`/Eleves/Edit/${row.id}`);
+	}
 </script>
 
+<Modal title="Suspendre l'eleve" bind:open={modalDelete} autoclose>
+    Etes-vous sûr de vouloir suspendre cet élève ?
+    <svelte:fragment slot="footer">
+      <Button color="red" on:click={() => suspendreEleve(eleveToSusprendre)}>Suspendre</Button>
+      <Button color="alternative">Retour</Button>
+    </svelte:fragment>
+</Modal>
 <div class="mx-20 px-4 bg-white">
-    <h1 class="text-xl">List des élèves</h1>
-    <div class="flex justify-end">
-        <Button class="right-0 mt-4" on:click={addNewEleve} color="blue"> + Rajouter un eleve</Button>
+    <h1 class="text-xl pt-4 ml-4">List des élèves</h1>
+    <div class="flex justify-end mb-4">
+        <Button class="right-0 mt-4 " on:click={addNewEleve} color="blue"><UserAddSolid size="sm" class="mr-2" />   Rajouter un eleve</Button>
     </div>
     <Datatable {handler}>
         <table>
@@ -110,7 +155,10 @@
                         {/if}
                         <td>{formatDate(row.dateEntree)}</td>
                         <td>{row.maison?.ville}</td>
-                        <td><a href="Eleves/Edit/{row.id}" > <UserEditSolid size="sm" /></a></td>
+                        <td><Button on:click={() => editEleve(row)}> <UserEditSolid color="black" size="sm" /></Button>
+                        <Button  on:click={() => deleteModel(row)}><UserRemoveSolid color="black" size="sm" /></Button>
+                        </td>
+
                     </tr>
                 {/each}
             </tbody>

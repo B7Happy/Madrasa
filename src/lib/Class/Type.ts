@@ -61,6 +61,11 @@ export type ElevesUpdate = {
     dateEntree: string;
 }
 
+export type ElevesSuspendu = {
+    id: number;
+    suspendu: boolean;
+}
+
 export type Parent = {
     id: number;
     type: string;
@@ -96,11 +101,24 @@ export type ClasseCreate = {
     groupeId: number | null;
 }
 
+export type ClasseDelete = {
+    id: number;
+    classe: string;
+    professeursId: number | null;
+    groupeId: number | null;
+}
+
 export type Professeurs = {
     id: number;
     nom: string;
     email: string;
-    telMobile: number;
+    telMobile: number | null;
+}
+
+export type ProfesseurCreate = {
+    nom: string;
+    email: string;
+    telMobile: number | null;
 }
 
 

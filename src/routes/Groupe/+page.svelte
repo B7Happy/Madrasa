@@ -102,7 +102,59 @@
             }
         });
 	}
+  
+      let deleteModale = false;
+      let deleted = false;
+
+  function deleteGroupe(groupe: Groupe): void {
+    //deleteModal = true;
+
+    deleted = true;
+        groupeDelete.id = groupe.id;
+        groupeDelete.nom = groupe.nom;
+
+        const res = fetch(url + 'Groupe', {
+            method: 'Delete',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(groupeDelete)
+            });
+
+            res.then((response) => {
+                if (response.ok) {
+                    triggerSucess();
+                    location.reload();
+                } else {
+                    triggerFail();
+                }
+            });
+  }
+
+    let groupeDelete : Groupe = {
+        id: 0,
+        nom: ""
+    };
+
+
+	function deleteModal(groupe: Groupe): void {
+    groupeDelete.id = groupe.id;
+    groupeDelete.nom = groupe.nom;
+		deleteModale = true;
+
+        //deleteGroupe(groupeDelete);
+	}
 </script>
+
+<Modal title="Supprimer le groupe" bind:open={deleteModale} autoclose>
+  <FloatingLabelInput style="outlined" id="floating_outlined" name="floating_outlined" type="text" bind:value={groupeDelete.nom} disabled>
+      Groupe
+    </FloatingLabelInput>
+  <svelte:fragment slot="footer">
+    <Button color="red" on:click={() => deleteGroupe(groupeDelete)}>Supprimer</Button>
+    <Button color="alternative">Retour</Button>
+  </svelte:fragment>
+</Modal>
 
 <Modal title="Create groupe" bind:open={createModal} autoclose>
     <FloatingLabelInput style="outlined" id="floating_outlined" name="floating_outlined" type="text" bind:value={groupeCreate.nom}>
@@ -131,44 +183,41 @@
 
   <div class="flex justify-end">
     {#if sucess}
-    {#if create}
+    
     <Toast color="green" class="mr-4 mb-6" dismissable={false} transition={slide} bind:open>
         <svelte:fragment slot="icon">
           <CheckCircleSolid class="w-5 h-5" />
           <span class="sr-only">Check icon</span>
         </svelte:fragment>
+        {#if create}
         Le groupe a bien été creer.
-    </Toast>
-    {/if}
-    {#if modifier}
-    <Toast color="green" class="mr-4 mb-6" dismissable={false} transition={slide} bind:open>
-        <svelte:fragment slot="icon">
-          <CheckCircleSolid class="w-5 h-5" />
-          <span class="sr-only">Check icon</span>
-        </svelte:fragment>
+        {/if}
+        {#if modifier}
         Le groupe a bien été modifier.
+        {/if}
+        {#if deleted}
+        Le groupe a bien été supprimer.
+        {/if}
     </Toast>
-    {/if}
+    
     {/if}
     {#if fail}
-    {#if create}
+    
     <Toast color="red" class="mr-4 mb-6" dismissable={false} transition={slide} bind:open>
         <svelte:fragment slot="icon">
           <CloseCircleSolid  class="w-5 h-5" />
           <span class="sr-only">Error icon</span>
         </svelte:fragment>
+        {#if create}
         Le groupe n'a pas été creer.
-    </Toast>
-    {/if}
-    {#if modifier}
-    <Toast color="red" class="mr-4 mb-6" dismissable={false} transition={slide} bind:open>
-        <svelte:fragment slot="icon">
-          <CloseCircleSolid  class="w-5 h-5" />
-          <span class="sr-only">Error icon</span>
-        </svelte:fragment>
+        {/if}
+        {#if modifier}
         Le groupe n'a pas été modifier.
+        {/if}
+        {#if deleted}
+        Le groupe n'a pas été supprimer.
+        {/if}
     </Toast>
-    {/if}
     {/if}
 </div>
 
@@ -192,6 +241,7 @@
           <TableBodyCell>{groupe.nom}</TableBodyCell>
           <TableBodyCell>
             <Button on:click={() => editGroupe(groupe)} class="font-medium text-blue-600 hover:underline dark:text-blue-500">Modifier</Button>
+            <Button on:click={() => deleteModal(groupe)} class="font-medium text-red-600 hover:underline dark:text-red-500">Supprimer</Button>
           </TableBodyCell>
         </TableBodyRow>
       {/each}
